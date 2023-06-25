@@ -1,15 +1,15 @@
-import {Route, Switch} from 'react-router-dom'
+import {Route, Routes} from 'react-router-dom'
+import Home from '../pages/Home'
 
 function Router(){
     return (
-        <Switch>
-            <Route path="/">
-                
-            </Route>
-            <Route path="/add-book">
-
-            </Route>
-        </Switch>
+        <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/notes" element={<Home />} />
+            <Route path="/notes/:identifier" element={<Home />} />
+            <Route path="/add" element={<Home />} />
+            <Route path="/archived" element={<Home />} />
+        </Routes>
     )
 }
 

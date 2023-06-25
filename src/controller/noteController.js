@@ -1,6 +1,5 @@
-import {Notes as notes}  from "../models/Note";
+import Notes  from "../models/Note";
 
-let Notes = notes
 
 function getAll(){
     return Notes

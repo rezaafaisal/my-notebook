@@ -1,5 +1,4 @@
-export default function Notes(){
-    let notes = [
+    let Notes = [
         {
             id: 1,
             title: "Contoh note pertama",
@@ -19,6 +18,4 @@ export default function Notes(){
             archived: false
         }
     ]
-
-    return notes;
-}
+export default Notes
