@@ -1,10 +1,11 @@
 import { useState } from 'react'
+import Router from './router'
 
 
 function App() {
   return (
     <>
-      <p className='text-gray-100 bg-blue-500 block h-10 w-50'>Selamat datang sayang aokwaokwoak</p>
+      <Router/>
     </>
   )
 }
