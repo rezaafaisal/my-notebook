@@ -35,6 +35,9 @@ export default function Home(){
 
         setTitle('')
         setContent('')
+        setTitleChars(0)
+        setContentChars(0)
+        setMax(maxVal)
         
     }
 
