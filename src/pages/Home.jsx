@@ -31,7 +31,7 @@ export default function Home(){
             title: title,
             body: body,
             archived: false,
-            createdAt: getDatetime()
+            createdAt: new Date().toISOString()
         }
         // add to local
         Notes.data.push(newNote)
@@ -135,7 +135,7 @@ export default function Home(){
                     </div>
                     :
                     notes.filter(el => el.archived == false ).map((el, index) => {
-                        return <NoteCard deleteNote={deleteNote} archiveNote={archiveNote} key={index} {...el} body={el.body.substring(0, 200)+'...'} />
+                        return <NoteCard deleteNote={deleteNote} archiveNote={archiveNote} key={index} {...el} />
                     })
 
                 }

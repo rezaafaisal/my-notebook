@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faEllipsis } from "@fortawesome/free-solid-svg-icons"
 import { NavLink } from "react-router-dom"
+import { showFormattedDate } from "../utils"
 export default function NoteCard(props){
     return (
         <div className="p-3 bg-slate-100 border shadow rounded-lg relative">
             <h3 className="text-lg font-medium text-slate-600 ">{props.title}</h3>
-            <span className="text-xs text-slate-400">{props.createdAt}</span>
+            <span className="text-xs text-slate-400">{showFormattedDate(props.createdAt)}</span>
             <p className="mt-5 text-sm font-light text-justify">
                 {props.body}
             </p>
