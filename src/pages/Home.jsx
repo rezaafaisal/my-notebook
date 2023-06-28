@@ -1,6 +1,7 @@
 import NoteCard from "../components/NoteCard";
 import { useEffect, useState } from "react";
 import Notes from "../models/Note";
+import getDatetime from "../helpers/Date";
 
 export default function Home(){
     // notes
@@ -9,24 +10,28 @@ export default function Home(){
 
     // form state
     const [title, setTitle] = useState('')
-    const [content, setContent] = useState('')
+    const [body, setbody] = useState('')
 
+    const [keyword, setKeyword] = useState('')
+
+    const [valid, setValid] = useState(true)
     // limit charss
     const maxVal = 50
     const [max, setMax] = useState(maxVal)
-    const [titleChars, setTitleChars] = useState(0)
-    const [contentChars, setContentChars] = useState(0)
     
 
-    function createNote(){
-        // get last id from array
-        const lastId = Notes.data.length > 0 ? Notes.data.slice(-1)[0]['id'] : 1
+    function search(){
+        const newData = (keyword.length > 0) ? Notes.data.filter(el => el.title.toLowerCase().includes(keyword)) : Notes.data
+        setNotes(newData)
+    }
 
+    function createNote(){
         const newNote = {
-            id:lastId+1,
+            id: +new Date(),
             title: title,
-            content: content,
-            archived: false
+            body: body,
+            archived: false,
+            createdAt: getDatetime()
         }
         // add to local
         Notes.data.push(newNote)
@@ -34,9 +39,7 @@ export default function Home(){
         setNotes(newData)
 
         setTitle('')
-        setContent('')
-        setTitleChars(0)
-        setContentChars(0)
+        setbody('')
         setMax(maxVal)
         
     }
@@ -63,6 +66,28 @@ export default function Home(){
         Notes.data = newData
     }
 
+    function validate(){
+        if(title.length == 0 || body.length == 0){
+             setValid(false)
+        }
+
+        else{
+            if(max < 0){
+                setValid(false)
+            }
+            else{
+                setValid(true)
+            }
+        }
+    }
+    useEffect(()=>{
+        validate()
+    }, [max, title, body] )
+
+    useEffect(()=>{
+        search()
+    }, [keyword])
+
 
     return (
         <>
@@ -72,27 +97,36 @@ export default function Home(){
                 <input type="text"
                     onChange={(e)=>{
                         setTitle(e.target.value)
-                        setTitleChars(e.target.value.length)
                     }}
                     onKeyUp={() => {
-                        setMax(maxVal-(contentChars+titleChars))
+                        setMax(maxVal-(body.length+title.length))
                     }}
-                    className="w-full p-2 rounded bg-white mb-5" placeholder="Judul catatan" value={title} />
+                    className={"w-full p-2 rounded bg-white mb-5" +(!valid ? ' ring-2 ring-rose-500 focus:outline-none' : ' ring-0')} placeholder="Judul catatan" value={title} />
                 <textarea rows="5"
                     onChange={(e)=>{
-                        setContent(e.target.value)
-                        setMax(maxVal-(contentChars+titleChars))
-                        setContentChars(e.target.value.length)
+                        setbody(e.target.value)
                     }}
-                    onKeyUp={()=>setMax(maxVal-(contentChars+titleChars))}
-                    className="w-full p-2 rounded bg-white mb-2" placeholder="Catatan max 40 karakter" value={content}></textarea>
-                <span className="mb-2 text-xs block text-end">Sisa karakter : {max}</span>
-                <button onClick={createNote} className="w-full bg-teal-500 text-white rounded py-2">Tambah</button>
+                    onKeyUp={()=>{
+                        setMax(maxVal-(body.length+title.length))
+                    }}
+                    className={"w-full p-2 rounded bg-white mb-2" + (!valid ? ' ring-2 ring-rose-500 focus:outline-none' : ' ring-0')} placeholder="Catatan max 40 karakter" value={body}></textarea>
+                {
+                    (valid) ?
+                    <span className={"mb-2 text-xs block text-end"}>Sisa karakter : {max}</span>
+                    :
+                    <span className={"mb-2 text-xs block text-end text-rose-500"}>Judul dan tidak boleh kosong & Karakter tidak boleh melebihi {maxVal}</span>
+                }
+                <button disabled={!valid} onClick={createNote} className={"w-full bg-teal-500 text-white hover:bg-teal-600 duration-150 rounded py-2 "+(!valid? ' cursor-not-allowed' : '')}>Tambah</button>
             </div>
         </div>
         <div className="w-full h-0.5 bg-slate-300 mb-10"></div>
         <div>
             <h3 className="text-lg mb-5 font-semibold text-slate-700">Catatan Aktif</h3>
+            <div className="flex justify-end">
+                <input type="text"
+                onChange={(e)=>{setKeyword(e.target.value)}}
+                className="rounded bg-white shadow w-4/12 px-5 py-2 mb-5 border border-slate-500" placeholder="Cari catatan" />
+            </div>
             <div className="grid grid-col-1 lg:grid-cols-3 gap-3">
                 {
                     notes.filter(el => el.archived == false).length == 0 ? 
@@ -101,7 +135,7 @@ export default function Home(){
                     </div>
                     :
                     notes.filter(el => el.archived == false ).map((el, index) => {
-                        return <NoteCard deleteNote={deleteNote} archiveNote={archiveNote} key={index} id={el.id} title={el.title} content={el.content.substring(0, 200)+'...'} />
+                        return <NoteCard deleteNote={deleteNote} archiveNote={archiveNote} key={index} {...el} body={el.body.substring(0, 200)+'...'} />
                     })
 
                 }

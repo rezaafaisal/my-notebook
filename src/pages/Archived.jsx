@@ -49,7 +49,7 @@ export default function Archived(){
                     </div>
                     :
                     notes.filter(el => el.archived == true).map((el, index) => {
-                        return <NoteCard deleteNote={deleteNote} unArchiveNote={unArchiveNote} key={index} {...el} content={el.content.substring(0, 200)+'...'} />
+                        return <NoteCard deleteNote={deleteNote} unArchiveNote={unArchiveNote} key={index} {...el} body={el.body.substring(0, 200)+'...'} />
                     })
                 }
             </div>
